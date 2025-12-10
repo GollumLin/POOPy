@@ -1,0 +1,45 @@
+name: Windows Build with Miniconda
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Miniconda
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        python-version: 3.11          # 指定 Python 版本
+        auto-update-conda: true       # 自动更新 conda
+        activate-environment: test-env
+        channels: conda-forge,defaults
+        channel-priority: true
+
+    - name: Verify conda and Python
+      shell: bash
+      run: |
+        conda --version
+        python --version
+
+    - name: Install dependencies
+      shell: bash
+      run: |
+        pip install --upgrade pip setuptools wheel
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+    - name: Build and install package
+      shell: bash
+      run: |
+        pip install .
+
+    - name: Run tests
+      shell: bash
+      run: |
+        pytest --disable-warnings
