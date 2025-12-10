@@ -29,7 +29,12 @@ jobs:
         conda --version
         python --version
 
-    - name: Install dependencies
+    - name: Install GDAL via conda
+      shell: powershell
+      run: |
+        conda install -c conda-forge gdal -y
+
+    - name: Install other dependencies
       shell: powershell
       run: |
         pip install --upgrade pip setuptools wheel
@@ -43,4 +48,3 @@ jobs:
     - name: Run tests
       shell: powershell
       run: |
-        pytest --disable-warnings
