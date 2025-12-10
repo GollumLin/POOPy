@@ -4,6 +4,7 @@ on:
   push:
     branches: [ main ]
   pull_request:
+  workflow_dispatch:   # 允许在 Actions 页面手动运行
 
 jobs:
   build:
@@ -23,23 +24,23 @@ jobs:
         channel-priority: true
 
     - name: Verify conda and Python
-      shell: bash
+      shell: powershell
       run: |
         conda --version
         python --version
 
     - name: Install dependencies
-      shell: bash
+      shell: powershell
       run: |
         pip install --upgrade pip setuptools wheel
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        if (Test-Path requirements.txt) { pip install -r requirements.txt }
 
     - name: Build and install package
-      shell: bash
+      shell: powershell
       run: |
         pip install .
 
     - name: Run tests
-      shell: bash
+      shell: powershell
       run: |
         pytest --disable-warnings
